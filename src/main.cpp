@@ -1,9 +1,25 @@
 #include <Arduino.h>
+#include <SimpleDHT.h>
+#include <Light.h>
+#include <Heater.h>
+
+char buffer[20];
+Light light;
+Heater heater;
 
 void setup() {
-    // put your setup code here, to run once:
+    Serial.begin(9600);
+
 }
 
 void loop() {
-    // put your main code here, to run repeatedly:
+}
+
+void SerialEvent(){
+    if(Serial.available()){
+        Serial.readBytesUntil('\n',buffer,20);
+        
+
+    }
+
 }
