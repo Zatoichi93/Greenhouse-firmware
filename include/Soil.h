@@ -5,7 +5,9 @@
 
 class Soil{
     public:
-        int getValue();
+        Soil();
+        int getAvg();
+        int getValue(int i);
 };
 
 #endif

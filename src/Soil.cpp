@@ -2,9 +2,12 @@
 #include <Arduino.h>
 #include <Configuration.h>
 
+Soil::Soil(){
 
-int Soil::getValue(){
-    //Leggiamo il primo sensore
+}
+
+int Soil::getAvg(){
+     //Leggiamo il primo sensore
     int rawValue1 = analogRead(SOIL_SENSOR_1_PIN);
     int rawValue2 = analogRead(SOIL_SENSOR_2_PIN);
 
@@ -12,4 +15,8 @@ int Soil::getValue(){
     int value2 = map(rawValue2,SOIL_SENSOR_2_MAX,SOIL_SENSOR_2_MIN,0,100);
 
     return (value1+value2)/2;
+}
+
+int Soil::getValue(int i){
+   
 }
