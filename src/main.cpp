@@ -24,6 +24,7 @@ void getConfig(){
     root["targetTemp"] = heater.getTargetTemp();
 
     root.printTo(Serial);
+    Serial.println();
 }
 
 void getValues(){
@@ -37,6 +38,7 @@ void getValues(){
     root["soil"] = soil.getAvg();
 
     root.printTo(Serial);
+    Serial.println();
 }
 
 void processSetCmd(){char *arg;
