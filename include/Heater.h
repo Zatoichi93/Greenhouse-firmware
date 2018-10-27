@@ -12,7 +12,7 @@ class Heater{
     void setTargetTemperature(float temp);
     float getMaxTemp();
     float getTargetTemp();
-    void heat(float chamberTemp);
+    bool heat(float chamberTemp);
     private:
     float _targetTemp;
     float _maxTemp;

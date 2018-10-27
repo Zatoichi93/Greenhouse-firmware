@@ -11,34 +11,41 @@ SimpleDHT22 dht22(DHT22_PIN);
 Light light;
 Heater heater;
 Soil soil;
+StaticJsonBuffer<100> jsonBuffer;
 
 float temperature;
 float humidity;
 unsigned long timer;
+unsigned long totalTime;
+unsigned long heatTime;
+unsigned long offTime;
+
 
 void getConfig(){
-    StaticJsonBuffer<100> jsonBuffer;
-
     JsonObject& root = jsonBuffer.createObject();
     root["maxTemp"] = heater.getMaxTemp();
     root["targetTemp"] = heater.getTargetTemp();
 
     root.printTo(Serial);
     Serial.println();
+    jsonBuffer.clear();
 }
 
 void getValues(){
-    
-    StaticJsonBuffer<100> jsonBuffer;
-
     JsonObject& root = jsonBuffer.createObject();
-    root["temp"] = temperature;
-    root["humidity"] = humidity;
-    root["light"] = light.isOn();
-    root["soil"] = soil.getAvg();
+    root["t"] = temperature;
+    root["h"] = humidity;
+    root["l"] = light.isOn();
+    root["s"] = soil.getAvg();
+    root["tt"] = round((millis()-totalTime)/100)/10.0;
+    root["ht"] = round((millis()-offTime)/100)/10.0;
 
     root.printTo(Serial);
     Serial.println();
+    jsonBuffer.clear();
+    totalTime = millis();
+    offTime = millis();
+    heatTime = 0;
 }
 
 void processSetCmd(){char *arg;
@@ -70,9 +77,11 @@ void setup() {
     sCmd.addCommand("GET", getConfig);
     sCmd.addCommand("READ", getValues);
 
+    totalTime = 0;
 }
 
 void loop() {
+
     if(millis()-timer > 2000){
         int err = SimpleDHTErrSuccess;
         if ((err = dht22.read2(&temperature, &humidity, NULL)) != SimpleDHTErrSuccess) {
@@ -81,6 +90,12 @@ void loop() {
         }
         timer = millis();
     }
-    heater.heat(temperature);
+    bool on = heater.heat(temperature);
+    if(on){
+        heatTime = millis()-totalTime;
+    }else{
+        offTime = millis()-heatTime;
+    }
+
     sCmd.readSerial();
 }

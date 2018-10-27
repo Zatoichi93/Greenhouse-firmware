@@ -7,7 +7,6 @@ class Soil{
     public:
         Soil();
         int getAvg();
-        int getValue(int i);
 };
 
 #endif

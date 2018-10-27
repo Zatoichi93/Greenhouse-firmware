@@ -11,6 +11,7 @@ int _maxTempADDR=0;
 int _tgtTempADDR=8;
 
 Heater::Heater(){
+    analogReference(INTERNAL);
     EEPROM.get(_maxTempADDR,_maxTemp);
     EEPROM.get(_tgtTempADDR,_targetTemp);
     pinMode(HEATHER_PIN,OUTPUT);
@@ -38,17 +39,23 @@ float Heater::getTargetTemp(){
 }
 
 float Heater::readTemp(){
-    return _thermistor.read();
+    float read = analogRead(NTC_PIN);
+    read = read/9.31;
+    if(read<5 || read >50){
+        return 100;
+    }
+    return read;
 }
 
-void Heater::heat(float chamberTemp){
-    if(readTemp()<=_maxTemp && chamberTemp<_targetTemp){
+bool Heater::heat(float chamberTemp){
+    bool on=readTemp()<=_maxTemp && chamberTemp<_targetTemp;
+    if(on){
         //Accende il riscaldamento
         digitalWrite(HEATHER_PIN,HIGH);
     }
-    else if(readTemp()>_maxTemp){
+    else{
         //Spegne
         digitalWrite(HEATHER_PIN,LOW);
     }
-
+    return on;
 }
